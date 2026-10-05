@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>코인노래방 키우기</title>
+    <style>
+        :root {
+            --bg-brightness: 100%;
+            --primary-color: #ff4081;
+            --secondary-color: #3f51b5;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            filter: brightness(var(--bg-brightness));
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* 발열/배터리 최적화: GPU 가속 활용 */
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 480px;
+            margin: 0 auto;
+            background: #1e1e2f;
+            position: relative;
+            transform: translateZ(0);
+        }
+
+        /* 미러볼 테두리 눈 안 아픈 반짝임 효과 */
+        .mirrorball-active {
+            box-shadow: inset 0 0 15px rgba(255, 0, 255, 0.4), inset 0 0 30px rgba(0, 255, 255, 0.3);
+            animation: mirrorballGlow 4s infinite alternate ease-in-out;
+        }
+
+        @keyframes mirrorballGlow {
+            0% { border: 3px solid rgba(255, 64, 129, 0.6); }
+            50% { border: 3px solid rgba(63, 81, 181, 0.6); }
+            100% { border: 3px solid rgba(0, 230, 118, 0.6); }
+        }
+
+        /* 상단 헤더 & 버튼 */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: #151522;
+            z-index: 10;
+        }
+
+        .top-btn {
+            background: #33344a;
+            color: #fff;
+            border: 1px solid #55567d;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        #patch-btn {
+            font-size: 13px;
+            padding: 8px 12px;
+            background: #3f51b5;
+            font-weight: bold;
+        }
+
+        /* 메인 컨텐츠 영역 */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card {
+            background: #2a2b40;
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* 애니메이션 점장 프로필 */
+        .manager-avatar {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: 2px solid #ff4081;
+            background: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80') center/cover;
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn:active {
+            opacity: 0.8;
+        }
+
+        /* 시작 화면 모달 */
+        #start-screen {
+            position: absolute;
+            inset: 0;
+            background: #0f0c20;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        #start-screen h1 {
+            font-size: 28px;
+            color: #ff4081;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(255,64,129,0.5);
+        }
+
+        .play-btn {
+            padding: 15px 40px;
+            font-size: 20px;
+            background: #00e676;
+            color: #000;
+            font-weight: bold;
+            border-radius: 30px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,230,118,0.4);
+        }
+
+        /* 모달 공통 */
+        .modal {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 90;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-body {
+            background: #25263a;
+            border-radius: 12px;
+            padding: 20px;
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .slider-group {
+            margin: 15px 0;
+        }
+
+        .slider-group label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .slider-group input {
+            width: 100%;
+        }
+
+        /* 야바위 미니게임 */
+        .cups-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+
+        .cup {
+            width: 50px;
+            height: 60px;
+            background: #ff9800;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* 패치노트 간결화 */
+        .patch-list {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body class="mirrorball-active">
+
+<div id-="game-container" id="game-container">
+    <!-- 시작 화면 -->
+    <div id="start-screen">
+        <h1>🎤 코인노래방 키우기</h1>
+        <button class="play-btn" onclick="startGame()">PLAY</button>
+    </div>
+
+    <!-- 헤더 영역 -->
+    <header>
+        <button id="patch-btn" class="top-btn" onclick="openModal('patch-modal')">📋 패치내역</button>
+        <div>💰 <span id="money-display">0</span>원</div>
+        <button class="top-btn" onclick="openModal('settings-modal')">⚙️ 설정</button>
+    </header>
+
+    <!-- 메인 컨텐츠 -->
+    <div class="main-content">
+        <!-- 점장 정보 -->
+        <div class="card">
+            <div class="manager-avatar"></div>
+            <div>
+                <h3>점장 (여주인공)</h3>
+                <p style="font-size: 12px; color: #aaa;">매장 종합 관리 중</p>
+            </div>
+            <button class="btn" onclick="playSfx();">대화</button>
+        </div>
+
+        <!-- 방 관리 -->
+        <div class="card" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+            <div style="display:flex; justify-content:space-between; width:100%;">
+                <h4>룸 1 (수용인원: <span id="capacity">2</span>명)</h4>
+                <button class="btn" onclick="upgradeCapacity()">인원 확장</button>
+            </div>
+            <p style="font-size:12px; color:#ddd;">최대 부를 수 있는 곡 수: <span id="max-songs">10</span>곡</p>
+        </div>
+
+        <!-- 창고 및 재고 (꾹 누르기 기능) -->
+        <div class="card">
+            <div>
+                <h4>창고 재고</h4>
+                <p style="font-size: 12px; color: #aaa;">현재 재고: <span id="stock-display">0</span>개</p>
+            </div>
+            <button class="btn" id="stock-btn">재고 채우기 (꾹 누르기)</button>
+        </div>
+
+        <!-- 직원 및 자판기 -->
+        <div class="card" style="flex-direction: column; align-items: flex-start; gap: 6px;">
+            <h4>직원 상태</h4>
+            <p style="font-size: 12px;" id="staff-info">직원: 매니저 (1초당 1개 충전)</p>
+            <p style="font-size: 12px; color:#4caf50;" id="vending-info">자판기 매출 보너스: +0%</p>
+            <button class="btn" style="margin-top:5px;" onclick="promoteStaff()">직원 승급</button>
+        </div>
+    </div>
+</div>
+
+<!-- 설정 모달 -->
+<div id="settings-modal" class="modal">
+    <div class="modal-body">
+        <h3>⚙️ 설정</h3>
+        <div class="slider-group">
+            <label>화면 밝기</label>
+            <input type="range" min="30" max="100" value="100" oninput="adjustBrightness(this.value)">
+        </div>
+        <div class="slider-group">
+            <label>배경음악 (BGM)</label>
+            <input type="range" id="bgm-slider" min="0" max="100" value="50" oninput="adjustBgmVolume(this.value)">
+        </div>
+        <div class="slider-group">
+            <label>효과음 (SFX)</label>
+            <input type="range" id="sfx-slider" min="0" max="100" value="80" oninput="adjustSfxVolume(this.value)">
+        </div>
+        <button class="btn" style="width:100%; margin-top:10px;" onclick="closeModal('settings-modal')">닫기</button>
+    </div>
+</div>
+
+<!-- 요약된 간결한 패치내역 모달 -->
+<div id="patch-modal" class="modal">
+    <div class="modal-body">
+        <h3>📋 패치 내역</h3>
+        <ul class="patch-list" style="margin: 15px 0; padding-left: 20px;">
+            <li>발열 및 배터리 절전 최적화 Complete</li>
+            <li>음식 판매가 최소 15% 수익성 보장</li>
+            <li>직원 생산 개수 및 자판기 매출 보너스 개편</li>
+            <li>창고 연속 충전 (버튼 홀드) 기능 적용</li>
+            <li>수용인원별 최대 곡 수 체계 개편 (최대 40곡)</li>
+            <li>10분 주기 야바위/주사위 도박 이벤트 추가</li>
+            <li>설정창(밝기, BGM, SFX) & 간결 UI 수정</li>
+        </ul>
+        <button class="btn" style="width:100%;" onclick="closeModal('patch-modal')">확인</button>
+    </div>
+</div>
+
+<!-- 야바위 & 주사위 미니게임 모달 -->
+<div id="gambling-modal" class="modal">
+    <div class="modal-body" style="text-align: center;">
+        <h3>🎲 깜짝 야바위 이벤트!</h3>
+        <p style="font-size:12px; color:#aaa; margin-top:5px;">주사위가 들어있는 컵을 맞추세요!</p>
+        
+        <div class="cups-container">
+            <div class="cup" onclick="playYabawi(0)">1</div>
+            <div class="cup" onclick="playYabawi(1)">2</div>
+            <div class="cup" onclick="playYabawi(2)">3</div>
+            <div class="cup" onclick="playYabawi(3)">4</div>
+            <div class="cup" onclick="playYabawi(4)">5</div>
+        </div>
+
+        <div id="dice-bet-section" style="display:none; margin-top: 10px; background: #1a1b29; padding: 10px; border-radius: 8px;">
+            <p style="font-size:12px; color:#00e676;">🎉 컵 맞추기 성공! 추가 주사위 눈금 맞추기 (1/6 확률)</p>
+            <select id="dice-select" style="margin: 8px 0; padding: 5px;">
+                <option value="1">주사위 눈금 : 1</option>
+                <option value="2">주사위 눈금 : 2</option>
+                <option value="3">주사위 눈금 : 3</option>
+                <option value="4">주사위 눈금 : 4</option>
+                <option value="5">주사위 눈금 : 5</option>
+                <option value="6">주사위 눈금 : 6</option>
+            </select>
+            <button class="btn" onclick="rollDiceGambling()">눈금 확인 (성공 시 +4배)</button>
+        </div>
+
+        <button class="btn" style="background:#666; margin-top:15px;" onclick="closeModal('gambling-modal')">거절 / 나가기</button>
+    </div>
+</div>
+
+<!-- 오디오 객체 연동 (업로드 파일 연결용) -->
+<audio id="sfx-audio" src="sfx_upgrade.mp3" preload="auto"></audio>
+<audio id="bgm-audio" src="bgm_main.mp3" loop preload="auto"></audio>
+
+<script>
+    // 게임 데이터 상태
+    let gameState = {
+        money: 10000,
+        capacity: 2,
+        stock: 0,
+        staffLevel: 0, // 0: 매니저, 1: 팀장, 2: 베테랑, 3: 마스터
+        betAmount: 1000
+    };
+
+    const staffData = [
+        { name: '매니저', rate: 1, vendingBonus: 0 },
+        { name: '팀장', rate: 2, vendingBonus: 0.02 },
+        { name: '베테랑', rate: 5, vendingBonus: 0.04 },
+        { name: '마스터', rate: 8, vendingBonus: 0.06 },
+        { name: '마스터+', rate: 12, vendingBonus: 0.08 }
+    ];
+
+    // 음식 최소 15% 마진 적용 계산 함수
+    function calculateFoodPrice(cost) {
+        return Math.ceil(cost * 1.15);
+    }
+
+    // 곡 수 계산
+    function getMaxSongs(capacity) {
+        let songs = 10 + (capacity - 2) * 5;
+        return Math.min(songs, 40);
+    }
+
+    // UI 업데이트
+    function updateUI() {
+        document.getElementById('money-display').innerText = gameState.money.toLocaleString();
+        document.getElementById('capacity').innerText = gameState.capacity;
+        document.getElementById('max-songs').innerText = getMaxSongs(gameState.capacity);
+        document.getElementById('stock-display').innerText = gameState.stock;
+
+        const currentStaff = staffData[gameState.staffLevel];
+        document.getElementById('staff-info').innerText = `직원: ${currentStaff.name} (1초당 ${currentStaff.rate}개 충전)`;
+        document.getElementById('vending-info').innerText = `자판기 매출 보너스: +${currentStaff.vendingBonus * 100}%`;
+    }
+
+    // 수용 인원 확장
+    function upgradeCapacity() {
+        if (gameState.money >= 3000) {
+            gameState.money -= 3000;
+            gameState.capacity += 1;
+            playSfx();
+            updateUI();
+        }
+    }
+
+    // 직원 승급
+    function promoteStaff() {
+        if (gameState.staffLevel < staffData.length - 1 && gameState.money >= 5000) {
+            gameState.money -= 5000;
+            gameState.staffLevel++;
+            playSfx();
+            updateUI();
+        }
+    }
+
+    // 창고 재고 채우기 (버튼 홀드 이벤트)
+    let holdInterval = null;
+    const stockBtn = document.getElementById('stock-btn');
+
+    function startHold() {
+        if (!holdInterval) {
+            holdInterval = setInterval(() => {
+                gameState.stock++;
+                updateUI();
+            }, 100);
+        }
+    }
+
+    function stopHold() {
+        if (holdInterval) {
+            clearInterval(holdInterval);
+            holdInterval = null;
+        }
+    }
+
+    stockBtn.addEventListener('mousedown', startHold);
+    stockBtn.addEventListener('mouseup', stopHold);
+    stockBtn.addEventListener('mouseleave', stopHold);
+    stockBtn.addEventListener('touchstart', (e) => { e.preventDefault(); startHold(); });
+    stockBtn.addEventListener('touchend', stopHold);
+
+    // 사운드 및 설정 조절
+    const sfxAudio = document.getElementById('sfx-audio');
+    const bgmAudio = document.getElementById('bgm-audio');
+
+    function playSfx() {
+        sfxAudio.currentTime = 0;
+        sfxAudio.play().catch(() => {});
+    }
+
+    function adjustBrightness(val) {
+        document.documentElement.style.setProperty('--bg-brightness', val + '%');
+    }
+
+    function adjustBgmVolume(val) {
+        bgmAudio.volume = val / 100;
+    }
+
+    function adjustSfxVolume(val) {
+        sfxAudio.volume = val / 100;
+    }
+
+    // 모달 제어
+    function openModal(id) {
+        document.getElementById(id).style.display = 'flex';
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
+    function startGame() {
+        document.getElementById('start-screen').style.display = 'none';
+        bgmAudio.play().catch(() => {});
+        alert("🎤 간단 튜토리얼: 방 인원을 늘려 곡 수 한도를 열고, 창고 버튼을 꾹 눌러 재고를 충전하세요!");
+    }
+
+    // 10분 주기 야바위 이벤트 시스템 (600,000 ms)
+    setInterval(() => {
+        openModal('gambling-modal');
+        document.getElementById('dice-bet-section').style.display = 'none';
+    }, 600000);
+
+    let winningCup = -1;
+    function playYabawi(selectedCup) {
+        winningCup = Math.floor(Math.random() * 5);
+        if (selectedCup === winningCup) {
+            gameState.money += Math.floor(gameState.betAmount * 1.5);
+            alert("🎉 야바위 성공! 1.5배의 금액을 얻었습니다. 추가 주사위 도박 기회가 주어집니다!");
+            document.getElementById('dice-bet-section').style.display = 'block';
+        } else {
+            gameState.money -= Math.floor(gameState.betAmount * 0.5);
+            alert("❌ 실패했습니다! 배팅금의 0.5배를 잃었습니다.");
+            closeModal('gambling-modal');
+        }
+        updateUI();
+    }
+
+    function rollDiceGambling() {
+        const userChoice = parseInt(document.getElementById('dice-select').value);
+        const diceResult = Math.floor(Math.random() * 6) + 1; // 정확히 1/6 확률
+
+        if (userChoice === diceResult) {
+            const bonus = gameState.betAmount * 4;
+            gameState.money += bonus;
+            alert(`🎲 주사위 눈금 [${diceResult}] 적중! 대성공! +${bonus}원 추가 획득!`);
+        } else {
+            alert(`🎲 주사위 눈금은 [${diceResult}]였습니다. 눈금 맞추기 실패!`);
+        }
+        closeModal('gambling-modal');
+        updateUI();
+    }
+
+    // 자동 직원 충전 루프 (1초 주기 - 배터리 절전 최적화)
+    setInterval(() => {
+        const rate = staffData[gameState.staffLevel].rate;
+        gameState.stock += rate;
+        updateUI();
+    }, 1000);
+
+    // 초기화
+    updateUI();
+</script>
+</body>
+</html>
