@@ -2,7 +2,7 @@
 <html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>코인노래방 키우기</title>
-<meta name="game-version" content="1.3.16">
+<meta name="game-version" content="1.3.17">
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#0e0614;--gold:#d9b25c;--pk:#ff3fa4;--cy:#3fe0ff;--fg:#f4eaff;--mut:#9b88b4}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
@@ -397,7 +397,7 @@ radial-gradient(circle,#ff9be0 0 1.6px,#0000 2.4px) 100% 0/6px 16px repeat-y}
 <div id="hud"><div class="pn"><span id="ic">☀️</span><span id="ap">오전</span><b id="tm">9:00</b><span id="dy">1일차</span></div><div class="pn"><div class="cn">₩</div><b id="mv">50,000</b></div><button class="pn" id="fv">🔥 피버</button></div><button class="pn" id="pt">📋 패치내용<i id="nw"></i></button><button class="pn" id="sg">⚙ 설정</button></div>
 <div id="dim"></div>
 <div id="rv"><div id="rvc"><div id="rvh"><button data-rvn="-1">◀</button><b id="rvt">1번방</b><button data-rvn="1">▶</button><button id="rvx">✕</button></div><div id="rvw"><svg id="rvsv" viewBox="0 0 360 250" xmlns="http://www.w3.org/2000/svg"></svg></div><div id="rvi"><div class="rg"><i id="rvgi"></i><em id="rvs2"></em></div><div id="rvinfo" class="cp"></div><div id="rveq"></div><div id="rvact"></div></div></div></div>
-<div id="st"><div class="stt">코인노래방 키우기</div><button class="stb" id="play">플레이</button><div class="stv">v1.3.16</div></div>
+<div id="st"><div class="stt">코인노래방 키우기</div><button class="stb" id="play">플레이</button><div class="stv">v1.3.17</div></div>
 <div id="ev" class="ov"><div class="qb" id="evb"></div></div>
 <div id="sp" class="ov"><div class="qb"><div class="qh">⚙ 설정</div><div class="sr"><span>밝기</span><input type="range" id="s_br" min="0" max="100"></div><div class="sr"><span>브금</span><input type="range" id="s_bg" min="0" max="100"></div><div class="sr"><span>효과음</span><input type="range" id="s_fx" min="0" max="100"></div><button class="btn2" id="rs" style="background:linear-gradient(#8a2a2a,#4a1414);border-color:#ff7a7a">처음부터 다시 시작</button><button class="btn2" id="sc">닫기</button></div></div>
 <div id="tut"><div id="tt"></div><div class="tr"><button class="sk" id="tk">건너뛰기</button><small id="tp"></small><button id="tn">다음</button></div></div>
@@ -480,8 +480,8 @@ const RB=[{ic:"🧹",name:"청소로봇",steps:[["🤖","청소로봇 구매","�
 {ic:"🥤",name:"자판기 로봇",steps:[["🤖","자판기 로봇 구매","10초마다 창고 물품 1종을 자판기에 가득 채워요",4000000],["🥤","동시 보충 +1","물품 2종을 동시에 채워요",12000000],["💰","판매가 상승","자판기 물품 판매가 +12%",9000000],["⏱️","보충 시간 단축","3초마다 채워요 (7초 단축)",14000000],["🥤","동시 보충 +2","물품 4종 동시 보충 · 판매가 +20% 추가",22000000]]},
 {ic:"📦",name:"창고로봇",steps:[["🤖","창고로봇 구매","위 물품부터 10초마다 차례로 주문해 채워요",8000000],["🏷️","주문 가격 할인","주문 가격 10% 감소",8000000],["💡","AI 탑재","잘 팔리는 물품부터 채우고 주문 가격 10% 추가 감소",6000000]]}];
 RB[0].steps.forEach(s=>s[3]=Math.round(s[3]*FC));[1,2].forEach(g=>RB[g].steps.forEach(s=>s[3]=Math.round(s[3]*SKJ)));RB.forEach(g=>g.steps.forEach(s=>s[3]=R10(s[3]*PD)));
-const PRX=k=>SEO?[3864000,15433000,16000000,150000000,380000000][k]:R10(PROMO[k].at(2)*PD);
-[[1800000,2800000,3100000,9000000,60000000,400000000],[4771000,24138000,18141000,28129000,44058000],[16139000,16139000,12130000]].forEach((a,g)=>a.forEach((v,i)=>RB[g].steps[i][3]=R10(v)));
+const PRX=k=>SEO?[3864000,18000000,30000000,100000000,380000000][k]:R10(PROMO[k].at(2)*PD);
+[[1800000,2800000,3100000,9000000,60000000,400000000],[4771000,24138000,18141000,28129000,80000000],[19000000,19000000,32000000]].forEach((a,g)=>a.forEach((v,i)=>RB[g].steps[i][3]=R10(v)));
 const rcN=()=>[0,1,1,3,3,3,5][S.rb[0]],rcT=()=>Math.max(1,S.cleanT-[0,5,8,8,14,24,24][S.rb[0]]);
 let rvT=0,rwT=0,rwP=0;
 function robTick(raw){
@@ -495,10 +495,15 @@ let h='<div class="chips2"><span>로봇 <b>'+S.rb.reduce((a,b)=>a+b,0)+'/14단�
 RB.forEach((g,gi)=>{h+='<div class="sec">'+g.ic+' '+g.name+' <span style="color:var(--mut);font-weight:600;font-size:11px">'+sm[gi]()+'</span></div>';
 if(gi==2&&S.rb[2]>=1)h+='<div class="al"><div class="m"><div class="a">창고로봇 작동</div><div class="b2">'+(S.rw?"지금 자동으로 주문하고 있어요":"지금은 멈춰 있어요")+'</div></div><button class="hb" data-rw="1" style="'+(S.rw?"background:linear-gradient(#ff9d8c,#c9453a);border-color:#5a1a14;box-shadow:0 2px 0 #5a1a14;color:#fff":"background:linear-gradient(#8affb0,#2fa862);border-color:#145a30;box-shadow:0 2px 0 #145a30;color:#06301a")+'">'+(S.rw?"비활성화":"활성화")+'</button></div>';
 g.steps.forEach((s,si)=>{const lv=S.rb[gi],done=si<lv,next=si==lv;h+='<div class="al'+(done?" on":"")+'"'+(!done&&!next?' style="opacity:.5"':'')+'><div class="av">'+s[0]+'</div><div class="m"><div class="a">'+(si+1)+'단계 · '+s[1]+'</div><div class="b2">'+s[2]+'</div></div>'+(done?'<span class="hd2">설치됨</span>':next?'<button class="hb" data-rb="'+gi+':'+si+'" data-c="'+s[3]+'">'+num(s[3])+'</button>':'<span class="hd2" style="color:var(--mut)">잠김</span>')+'</div>'})});return h}
+const bpr=(g,k)=>{let n=0;for(let i=g*5;i<Math.min(NR,g*5+5);i++)if(!S.ru[i][k])n++;return n*(k=="m"?R10(PD*FR*840000):R10(PD*FR*5400000*.55894))};
 function seoulRooms(){const ub=(i,k,ic,nm,ef,c0,done,c=R10(c0*PD))=>done&&S.ru[i].bk==k?FIXB(i,k,ic,nm):'<button class="ub2'+(done?" dn3":"")+'" '+(done?"":'data-ru="'+i+':'+k+'" data-c="'+c+'"')+'><div class="u1">'+ic+' '+nm+'</div><div class="u2">'+ef+'</div><div class="u3">'+(done?"✔ 설치됨":num(c))+'</div></button>';
-let h='<div class="chips2"><span>스피커 1.5배 · 디스코모드 2.5배 · 둘 다 3.0배</span></div>';
+const LK=(ic,nm)=>'<button class="ub2 dn3" style="opacity:.55"><div class="u1">'+ic+' '+nm+'</div><div class="u2">위 5방 묶음에서 구매해요</div><div class="u3">묶음 구매</div></button>';
+let h='<div class="chips2"><span>스피커 1.5배 · 디스코모드 2.5배 · 둘 다 3.0배</span></div><div class="chips2"><span>스피커·디스코모드는 5방씩 묶어서 구매해요</span></div><div class="ug">';
+for(const k of ["m","r"])for(let g=0;g*5<NR;g++){const rs=[];for(let i=g*5;i<Math.min(NR,g*5+5);i++)rs.push(i);const miss=rs.filter(i=>!S.ru[i][k]).length,c=bpr(g,k),ic=k=="m"?"🔊":MB_JS,nm=k=="m"?"스피커":"디스코모드",rg=(rs[0]+1)+"~"+(rs[rs.length-1]+1)+"번방 "+nm;
+h+=miss?'<button class="ub2" data-rg="'+g+':'+k+'" data-c="'+c+'"><div class="u1">'+ic+' '+rg+'</div><div class="u2">'+(k=="m"?"노래 1.5배 빠르게":"노래 2.5배 빠르게")+(miss<rs.length?" · "+miss+"방 남음":" · "+rs.length+"방 한꺼번에")+'</div><div class="u3">'+num(c)+'</div></button>':'<button class="ub2 dn3"><div class="u1">'+ic+' '+rg+'</div><div class="u2">'+(k=="m"?"노래 1.5배 빠르게":"노래 2.5배 빠르게")+'</div><div class="u3">✔ 설치됨</div></button>'}
+h+='</div>';
 for(let i=0;i<NR;i++){const u=S.ru[i];h+='<div class="uc"><div class="uh"><b>'+(i+1)+'번방</b><div class="cp"><span>노래 속도 <b>x'+mult(i).toFixed(1)+'</b></span><span>인원 <b>'+capOf(i)+'명</b></span><span>최대 <b>'+maxSongs(i)+'곡</b></span><span>곡당 <b>'+num(priceOf(i))+'</b></span></div></div><div class="ug">'+
-ub(i,"m","🔊","스피커 추가","노래 1.5배 빠르게",840000*FR,u.m)+ub(i,"r",MB_JS,"디스코모드","노래 2.5배 빠르게",5400000*FR*.55894,u.r)+
+(u.m?ub(i,"m","🔊","스피커 추가","노래 1.5배 빠르게",840000*FR,u.m):LK("🔊","스피커 추가"))+(u.r?ub(i,"r",MB_JS,"디스코모드","노래 2.5배 빠르게",5400000*FR*.55894,u.r):LK(MB_JS,"디스코모드"))+
 (u.c>=4?'<button class="ub2 dn3"><div class="u1">🛋️ 소파 추가</div><div class="u2">최대 10명</div><div class="u3">✔ 최대</div></button>':ub(i,"c","🛋️","소파 추가","인원 "+capOf(i)+"명 → "+Math.min(10,capOf(i)+2)+"명 · 곡당 +"+num(TSP)+" · 최대 +10곡",(S.ru[i].c==0?1430000/PD:480000*FR+200000*S.ru[i].c),0))+'</div></div>'}
 return h}
 
@@ -734,6 +739,7 @@ t=e.target.closest("[data-h]");if(t){const k=+t.dataset.h;if(!S.hr[k]&&S.money>=
 t=e.target.closest("[data-p]");if(t){const k=+t.dataset.p;if(!S.pr[k]&&S.money>=PRX(k)){S.money-=PRX(k);S.pr[k]=1;coin();build()}return}
 t=e.target.closest("[data-x]");if(t){const k=t.dataset.x;if(maxOf(k)>=SLM)return;const c=upCost(k);if(S.money>=c){S.money-=c;S.sl[k]++;coin();build()}return}
 t=e.target.closest("[data-vu]");if(t){if(t.dataset.vu=="k"&&S.vk<VKMAX&&S.money>=vkCost()){S.money-=vkCost();S.vk++;VCAP=10+10*S.vk;coin();build()}else if(t.dataset.vu=="c"&&S.vc<VMAX&&S.money>=vcCost()){S.money-=vcCost();S.vc++;coin();build()}else if(t.dataset.vu=="s"&&S.vs<VSMAX&&S.money>=vsCost()){S.money-=vsCost();S.vs++;coin();build()}return}
+t=e.target.closest("[data-rg]");if(t){const[g,k]=t.dataset.rg.split(":"),c=bpr(+g,k);if(c>0&&S.money>=c){S.money-=c;for(let i=g*5;i<Math.min(NR,g*5+5);i++)S.ru[i][k]=1;coin();build()}return}
 t=e.target.closest("[data-ru]");if(t){const[i,k]=t.dataset.ru.split(":"),u=S.ru[i],c=R10(PD*(SEO?{m:840000*FR,r:5400000*FR*.55894,p:0,c:(u.c==0?1430000/PD:480000*FR+200000*u.c)}:{m:Math.round(244000*CMX),r:Math.round(660000*CMX),p:Math.round(880000*CMP),c:Math.round(155000*CB*Math.pow(CG,u.c)*(u.c<3?CLO:1))})[k]);if(S.money>=c){if(k=="c"){if(u.c<(SEO?4:6)){S.money-=c;u.c++;coin();build()}}else if(!u[k]){S.money-=c;u[k]=1;coin();build()}}}});
 let hold=null;
 function doOrder(k,n){const it=ALL.find(x=>x[0]==k),q=Math.min(n==9999?Math.floor(S.money/oc(it)):(n||10),maxOf(k)-S.stock[k]),c=q*oc(it);if(q>0&&S.money>=c){S.money-=c;S.stock[k]+=q;return true}return false}
@@ -853,6 +859,7 @@ function save(){if(window.noSave)return;try{const sv=JSON.stringify({money:S.mon
 setInterval(save,5000);document.addEventListener("visibilitychange",()=>{if(document.hidden){save();if(bgmEl)bgmEl.pause()}else if(started){catchUp();bgmOn()}});
 const VER=document.querySelector('meta[name=game-version]').content;
 const PATCH=[
+{v:"1.3.17",d:"2026-10-10",n:["대규모 패치: 서울 스피커·디스코모드를 5방 묶음으로 구매, 업그레이드 가격 전반 조정"]},
 {v:"1.3.16",d:"2026-10-08",n:["대규모 밸런스 패치: 서울 업그레이드 가격과 청소로봇 구성을 크게 조정했어요","피버 타임 3배 → 2배"]},
 {v:"1.3.15",d:"2026-10-08",n:["서울 가격 재조정: 디스코모드 18,000,000, 유튜브 홍보 25,000,000, 방송국 홍보 380,000,000","서울 청소로봇 5단계는 모터 추가(60,000,000), 마지막 6단계는 2대 추가(총 5대, 400,000,000)로 순서 변경, 팔 9,000,000","서울 창고로봇·자판기 로봇 가격 인상 (인형탈 이후에 구매하도록)"]},
 {v:"1.3.14",d:"2026-10-07",n:["서울 모든 업그레이드·수리 비용을 천 원 단위로 정리 (백·십·일 원 자리 모두 0)"]},
